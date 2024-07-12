@@ -12,7 +12,7 @@ export default async function Home() {
     isEnabled: boolean;
     expiresAt: Date | null;
     allowedModels: string[];
-  }[] = await prisma.apiKey.findMany({
+  }[] = await prisma.token.findMany({
     where: {
       isEnabled: true
     }

@@ -13,27 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model ApiKey {
-  id                Int       @id @default(autoincrement())
-  key               String
-  name              String
-  description       String?
-  createdAt         DateTime  @default(now())
-  isQuotaLimited    Boolean
-  remainingTokens   Int?
-  isEnabled         Boolean   @default(true)
-  expiresAt         DateTime?
-  allowedModels     String[]
+model Token {
+  id              Int       @id @default(autoincrement())
+  key             String
+  name            String
+  description     String?
+  createdAt       DateTime  @default(now())
+  isQuotaLimited  Boolean
+  remainingTokens Int?
+  isEnabled       Boolean   @default(true)
+  expiresAt       DateTime?
+  allowedModels   String[]
 
   @@index([key])
 }
 
 model AIModel {
-  id           Int      @id @default(autoincrement())
-  type         ModelType
-  name         String
-  baseUrl      String?
-  apiToken     String?
+  id       Int       @id @default(autoincrement())
+  type     ModelType
+  name     String
+  baseUrl  String?
+  apiToken String?
 
   @@index([name])
 }
