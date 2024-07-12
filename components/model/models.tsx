@@ -39,7 +39,7 @@ export async function Models() {
                   <TableCell className="group">
                     <div className="font-semibold">
                       <Link
-                        href={"/token/token/" + model.id}
+                        href={"/model/model/" + model.id}
                         className="border-b-[1px] border-transparent group-hover:border-black transition-colors"
                       >
                         {model.name}

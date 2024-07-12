@@ -120,7 +120,7 @@ export default function Page() {
             }
           }}>
             <div className="space-y-2">
-              <Label htmlFor="token-name">Name</Label>
+              <Label htmlFor="token-name">Name <span className="text-red-400">*</span></Label>
               <Input id="token-name" placeholder="Enter token name" name='name' required />
             </div>
             <div className="space-y-2 my-2">

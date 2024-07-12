@@ -1,130 +1,91 @@
 'use server';
 
 import { v4 as uuidv4 } from 'uuid';
-
 import { z } from 'zod'
-import { notFound } from 'next/navigation';
+import { AiModel } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
 import prisma from '@/lib/prisma';
 
-const AddTokenSchema = z.lazy(() => z.object({
+const AddModelSchema = z.lazy(() => z.object({
   name: z.string().min(1),
-  description: z.string().optional(),
-  expiresAt: z.date().min(new Date()).optional(),
-  allowedModels: z.array(z.string()).optional(),
-  isQuotaLimited: z.boolean(),
-  remainingTokens: z.number().optional()
+  type: z.enum(['remote', 'local']),
+  modelName: z.string().min(1),
+  baseUrl: z.string().optional(),
+  apiToken: z.string().optional(),
+  maxProcesses: z.number().min(1).optional(),
 }))
 
-export type AddTokenType = z.infer<typeof AddTokenSchema>
+export type AddModelType = z.infer<typeof AddModelSchema>
 
-export async function addToken(data_: Record<string, any>) {
-  const data = AddTokenSchema.parse(data_)
-  const value = uuidv4().replaceAll("-", "").slice(0, 16)
+export async function addModel(data_: Record<string, any>) {
+  const data = AddModelSchema.parse(data_)
 
-  const existingToken = await prisma.token.findFirst({
-    where: { key: value }
-  })
+  const newaimodel = await prisma.aiModel.create({ data: {
+    ...data,
+    maxProcesses: data.maxProcesses || 128
+  } })
 
-  if (existingToken) {
-    throw new Error("Token with the same key already exists, try again")
-  }
-
-  const expiration = data.expiresAt ? data.expiresAt.toISOString() : data.expiresAt
-
-  await prisma.token.create({
-    data: {
-      key: value,
-      name: data.name,
-      description: data.description,
-      allowedModels: data.allowedModels || [],
-      expiresAt: expiration,
-      isQuotaLimited: data.isQuotaLimited,
-      remainingTokens: data.remainingTokens
-    }
-  })
-
-  revalidatePath('/token/')
-  return value
+  revalidatePath('/model/')
+  return newaimodel
 }
 
-export async function editToken(id: number, data_: Record<string, any>) {
-  const data = AddTokenSchema.parse(data_);
+export async function editModel(id: number, data_: Record<string, any>) {
+  const data = AddModelSchema.parse(data_);
 
-  const token = await prisma.token.findUnique({
+  const token = await prisma.aiModel.findUnique({
     where: { id: id }
   });
 
   if (!token) {
-    throw new Error("Token not found");
+    throw new Error("Model not found");
   }
 
-  const expiration = data.expiresAt ? data.expiresAt.toISOString() : data.expiresAt;
-
-  await prisma.token.update({
+  await prisma.aiModel.update({
     where: { id: id },
     data: {
-      name: data.name,
-      description: data.description,
-      allowedModels: data.allowedModels || [],
-      expiresAt: expiration || null,
-      isQuotaLimited: data.isQuotaLimited,
-      remainingTokens: data.remainingTokens
+      ...data,
+      maxProcesses: data.maxProcesses || 128,
     }
   });
 
-  revalidatePath('/token/token/' + id);
-  revalidatePath('/token/edit/' + id);
-  revalidatePath('/token/roll/' + id);
-  revalidatePath('/token/delete/' + id);
-  revalidatePath('/token/');
+  revalidatePath('/model/model/' + id);
+  revalidatePath('/model/edit/' + id);
+  revalidatePath('/model/delete/' + id);
+  revalidatePath('/model/');
 }
 
 
 export async function fetchModels() {
   const models = await prisma.aiModel.findMany({
-    orderBy: { id: 'desc' }
+    orderBy: { id: 'desc' },
+    select: {
+      id: true,
+      type: true,
+      name: true,
+      modelName: true,
+    }
   })
   return models
 }
 
-export async function fetchToken(id: number) {
-  const token = await prisma.token.findUnique({
+export async function fetchModel(id: number) {
+  const model = await prisma.aiModel.findUnique({
     where: { id: id }
   });
 
-  return token
+  return model
 }
 
 
-export async function deleteToken(id: number) {
+export async function deleteModel(id: number) {
 
-  await prisma.token.delete({
+  await prisma.aiModel.delete({
     where: { id }
   });
 
-  revalidatePath('/token/token/' + id.toString())
-  revalidatePath('/token/edit/' + id.toString())
-  revalidatePath('/token/roll/' + id.toString())
-  revalidatePath('/token/delete/' + id.toString())
-  revalidatePath('/token/')
-}
-
-export async function rollToken(id: number) {
-  const token = await prisma.token.findUnique({
-    where: { id }
-  })
-
-  if (!token) throw new Error("Token not found")
-  const value = uuidv4().replaceAll("-", "").slice(0, 16)
-  const res = await prisma.token.update({
-    where: { id },
-    data: {
-      key: value,
-    }
-  })
-
-  revalidatePath('/token/token/' + id.toString())
-  return value
+  revalidatePath('/model/model/' + id.toString())
+  revalidatePath('/model/edit/' + id.toString())
+  revalidatePath('/model/delete/' + id.toString())
+  revalidatePath('/model/')
 }

@@ -25,6 +25,7 @@ CREATE TABLE "AiModel" (
     "modelName" TEXT NOT NULL,
     "baseUrl" TEXT,
     "apiToken" TEXT,
+    "maxProcesses" INTEGER,
 
     CONSTRAINT "AiModel_pkey" PRIMARY KEY ("id")
 );
