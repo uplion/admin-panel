@@ -104,7 +104,9 @@ export async function editToken(id: number, data_: Record<string, any>) {
 
 
 export async function fetchTokens() {
-  const tokens = await prisma.token.findMany()
+  const tokens = await prisma.token.findMany({
+    orderBy: { createdAt: 'desc' }
+  })
   return tokens
 }
 

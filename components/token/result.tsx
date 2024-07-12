@@ -19,12 +19,12 @@ export function Result({ token }: { token: string }) {
                             setTimeout(() => setCopyText("Copy"), 1000)
                         }}>
                         <code
-                            className='inline-block h-[2rem] bg-slate-200 py-[6.5px] px-1 rounded-lg border-dotted border-black border-2 group-hover:border-green-600 group-hover:border-solid
-                 rounded-r-none transition-colors mr-0 text-xs'
+                            className='inline-block h-[42px] bg-slate-100 py-[6.5px] px-1 rounded-lg border-dotted border-black border-2 group-hover:border-green-600 group-hover:border-solid
+                 rounded-r-none transition-colors mr-0 text-lg'
                         >
                             {token}
                         </code>
-                        <span className="absolute text-xs inline-block h-[2rem] select-none  border-l-0 border-black border-2 rounded-lg rounded-l-none py-[5px] px-1 group-hover:border-green-600 transition-colors ">{copyText}</span>
+                        <span className="absolute text-lg font-mono inline-block h-[42px] select-none  border-l-0 border-black border-2 rounded-lg rounded-l-none py-[5px] px-1 group-hover:border-green-600 transition-colors ">{copyText}</span>
                     </div>
                 </TooltipTrigger>
                 <TooltipContent>
