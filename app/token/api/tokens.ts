@@ -12,7 +12,7 @@ const AddTokenSchema = z.lazy(() => z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   expiresAt: z.date().min(new Date()).optional(),
-  allowedModels: z.array(z.string()).min(1).optional(),
+  allowedModels: z.array(z.string()).optional(),
   isQuotaLimited: z.boolean(),
   remainingTokens: z.number().optional()
 }))
@@ -48,6 +48,26 @@ export async function addToken(data_: Record<string, any>) {
 
   revalidatePath('/token/')
   return value
+}
+
+export async function updateEnable(id: number, enable: boolean) {
+  const token = await prisma.token.findUnique({
+    where: { id }
+  })
+
+  if (!token) {
+    throw new Error("Token not found")
+  }
+
+  await prisma.token.update({
+    where: { id },
+    data: {
+      isEnabled: enable
+    }
+  })
+
+  revalidatePath('/token/edit/' + id.toString())
+  revalidatePath('/token/')
 }
 
 export async function editToken(id: number, data_: Record<string, any>) {

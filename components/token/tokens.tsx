@@ -13,6 +13,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { CheckIcon, PauseIcon } from "../icons";
 
 export async function Tokens() {
     const tokens = await fetchTokens()
@@ -37,11 +38,15 @@ export async function Tokens() {
                                 <TableRow key={token.id}>
                                     <TableCell className="group">
                                         <div className="font-semibold">
+                                            {token.isEnabled ?
+                                              <CheckIcon className="w-4 h-4 text-green-500 mr-2 inline fill-current" /> :
+                                              <PauseIcon className="w-4 h-4 text-red-500 mr-2 inline fill-current" />
+                                            }
                                             <Link
                                                 href={"/token/token/" + token.id}
                                                 className="border-b-[1px] border-transparent group-hover:border-black transition-colors"
                                             >
-                                                {token.name}
+                                               {token.name}
                                             </Link>
                                         </div>
                                     </TableCell>
@@ -127,3 +132,4 @@ export async function TokensSkeleton() {
         </Table>
     )
 }
+
