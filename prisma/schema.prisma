@@ -28,17 +28,18 @@ model Token {
   @@index([key])
 }
 
-model AIModel {
-  id       Int       @id @default(autoincrement())
-  type     ModelType
-  name     String
-  baseUrl  String?
-  apiToken String?
+model AiModel {
+  id        Int       @id @default(autoincrement())
+  type      ModelType
+  name      String
+  modelName String
+  baseUrl   String?
+  apiToken  String?
 
   @@index([name])
 }
 
 enum ModelType {
-  LOCAL
-  REMOTE
+  local
+  remote
 }

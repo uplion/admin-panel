@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ModelType" AS ENUM ('LOCAL', 'REMOTE');
+CREATE TYPE "ModelType" AS ENUM ('local', 'remote');
 
 -- CreateTable
 CREATE TABLE "Token" (
@@ -18,18 +18,19 @@ CREATE TABLE "Token" (
 );
 
 -- CreateTable
-CREATE TABLE "AIModel" (
+CREATE TABLE "AiModel" (
     "id" SERIAL NOT NULL,
     "type" "ModelType" NOT NULL,
     "name" TEXT NOT NULL,
+    "modelName" TEXT NOT NULL,
     "baseUrl" TEXT,
     "apiToken" TEXT,
 
-    CONSTRAINT "AIModel_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "AiModel_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
 CREATE INDEX "Token_key_idx" ON "Token"("key");
 
 -- CreateIndex
-CREATE INDEX "AIModel_name_idx" ON "AIModel"("name");
+CREATE INDEX "AiModel_name_idx" ON "AiModel"("name");

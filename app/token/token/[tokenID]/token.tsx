@@ -1,9 +1,8 @@
 'use client';
 
 import { Token } from '@/lib/prisma'
-import { CardContent, Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
+import { CardContent, Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils";
 import Link from "next/link"
 import { LockClosedIcon } from "@heroicons/react/24/outline"
 import { Badge } from "@/components/ui/badge"

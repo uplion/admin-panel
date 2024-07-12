@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils";
 export function AIModelsInput({
   onPathChange,
   defaultValue
-} : {
-  onPathChange : (paths: string[]) => void,
+}: {
+  onPathChange: (paths: string[]) => void,
   defaultValue?: string[]
 }) {
   const [paths, setPaths] = useState<string[]>(defaultValue || [])
@@ -31,7 +31,7 @@ export function AIModelsInput({
       {paths.map((path, index) => (
         <div key={index}>
           <div className="flex my-1">
-            <Input id="path" className="rounded-r-none" disabled style={{ cursor: "default" }} defaultValue={path}/>
+            <Input id="path" className="rounded-r-none" disabled style={{ cursor: "default" }} defaultValue={path} />
             <Button type='button' size="icon" variant="destructive" className="rounded-l-none" onClick={() => {
               const newPath = paths.filter((_, i) => i !== index)
               setPaths(newPath)
@@ -49,7 +49,7 @@ export function AIModelsInput({
             ref={inputRef}
             placeholder="gpt-3.5-turbo"
             className="rounded-r-none"
-            onChange={(e) => {path.current = e.target.value}}
+            onChange={(e) => { path.current = e.target.value }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 if (path.current) {

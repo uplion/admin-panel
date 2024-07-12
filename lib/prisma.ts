@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
-export type { Token, AIModel } from '@prisma/client'
+export type { Token, AiModel } from '@prisma/client'
 
 // PrismaClient is attached to the `global` object in development to prevent
 // exhausting your database connection limit.

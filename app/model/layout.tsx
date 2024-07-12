@@ -23,8 +23,8 @@ export default function Layout({
           <span>/</span>
           <div className="flex items-center">
             <Button asChild variant="ghost" className='py-4 text-xl'>
-              <Link href="/token">
-                Token
+              <Link href="/model">
+                Model
               </Link>
             </Button>
           </div>

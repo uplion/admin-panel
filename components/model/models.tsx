@@ -1,4 +1,4 @@
-import { fetchTokens } from "@/app/token/api/tokens"
+import { fetchModels } from "@/app/model/api/models"
 import { Button } from "@/components/ui/button"
 import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@/components/ui/table"
 import { CardContent, Card } from "@/components/ui/card"
@@ -13,12 +13,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { CheckIcon, PauseIcon } from "../icons";
 
-export async function Tokens() {
-  const tokens = await fetchTokens()
+export async function Models() {
+  const models = await fetchModels()
 
-  return tokens.length ? (
+  return models.length ? (
     <>
       <Card>
         <CardContent className="p-0">
@@ -26,42 +25,37 @@ export async function Tokens() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead className="hidden sm:table-cell">Description</TableHead>
-                <TableHead className="hidden md:table-cell">Created At</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden sm:table-cell">Model Name</TableHead>
+                <TableHead className="hidden md:table-cell">Type</TableHead>
                 <TableHead className="w-24 md:w-48">
                   <span className="hidden md:inline">Actions</span>
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {tokens.map((token) => (
-                <TableRow key={token.id}>
+              {models.map((model) => (
+                <TableRow key={model.id}>
                   <TableCell className="group">
                     <div className="font-semibold">
-                      {token.isEnabled ?
-                        <CheckIcon className="w-4 h-4 text-green-500 mr-2 inline fill-current" /> :
-                        <PauseIcon className="w-4 h-4 text-red-500 mr-2 inline fill-current" />
-                      }
                       <Link
-                        href={"/token/token/" + token.id}
+                        href={"/token/token/" + model.id}
                         className="border-b-[1px] border-transparent group-hover:border-black transition-colors"
                       >
-                        {token.name}
+                        {model.name}
                       </Link>
                     </div>
                   </TableCell>
-                  <TableCell className="hidden sm:table-cell">{token.description}</TableCell>
-                  <TableCell className="hidden md:table-cell">{token.createdAt.toLocaleString("zh-cn")}</TableCell>
+                  <TableCell>Running</TableCell>
+                  <TableCell className="hidden sm:table-cell">{model.modelName}</TableCell>
+                  <TableCell className="hidden md:table-cell">{model.type}</TableCell>
                   <TableCell>
                     <div className="items-center space-x-2 hidden md:flex">
-                      <Button size="sm" asChild variant="link" className="hover:text-zinc-700">
-                        <Link href={"/token/roll/" + token.id}>Roll</Link>
-                      </Button>
                       <Button size="sm" asChild variant="link" className="text-blue-600 hover:text-blue-500">
-                        <Link href={"/token/edit/" + token.id}>Edit</Link>
+                        <Link href={"/model/edit/" + model.id}>Edit</Link>
                       </Button>
                       <Button size="sm" asChild variant="link" className="text-red-500 hover:text-red-400">
-                        <Link href={"/token/delete/" + token.id}>Delete</Link>
+                        <Link href={"/model/delete/" + model.id}>Delete</Link>
                       </Button>
                     </div>
                     <DropdownMenu>
@@ -73,16 +67,13 @@ export async function Tokens() {
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                           <DropdownMenuItem>
-                            <Link href={"/token/token/" + token.id}>Details</Link>
+                            <Link href={"/model/model/" + model.id}>Details</Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <Link href={"/token/roll/" + token.id}>Roll</Link>
+                            <Link href={"/model/edit/" + model.id}>Edit</Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
-                            <Link href={"/token/edit/" + token.id}>Edit</Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Link href={"/token/delete/" + token.id} className="text-red-500">Delete</Link>
+                            <Link href={"/model/delete/" + model.id} className="text-red-500">Delete</Link>
                           </DropdownMenuItem>
                         </DropdownMenuGroup>
                       </DropdownMenuContent>
@@ -97,21 +88,22 @@ export async function Tokens() {
     </>
   ) : (
     <div className="text-center py-6">
-      <p className="text-neutral-500">No token found.</p>
+      <p className="text-neutral-500">No AI model found.</p>
     </div>
   )
 }
 
 
-export async function TokensSkeleton() {
-  const PlaceHolder = ({ className }: { className: string }) => (<TableCell>
-    <span className={`h-5 rounded-lg bg-slate-200 inline-block ` + className}></span>
+export async function ModelsSkeleton() {
+  const PlaceHolder = ({ className }: { className?: string }) => (<TableCell>
+    <span className={`h-5 rounded-lg bg-slate-200 inline-block animate-pulse ` + (className || '')}></span>
   </TableCell>)
   const l = (key: number) => (<TableRow key={key}>
-    <PlaceHolder className="w-[120px]"></PlaceHolder>
-    <PlaceHolder className="w-[210px] hidden sm:table-cell "></PlaceHolder>
-    <PlaceHolder className="w-[250px] hidden md:table-cell"></PlaceHolder>
-    <PlaceHolder className="w-[130px] hidden md:table-cell"></PlaceHolder>
+    <PlaceHolder className="w-full"></PlaceHolder>
+    <PlaceHolder className="w-full"></PlaceHolder>
+    <PlaceHolder className="w-full hidden sm:block"></PlaceHolder>
+    <PlaceHolder className="w-full hidden md:block"></PlaceHolder>
+    <PlaceHolder className="w-full hidden md:block"></PlaceHolder>
   </TableRow>)
   const x = []
   for (let i = 1; i <= 5; i++) x.push(l(i))
@@ -123,14 +115,15 @@ export async function TokensSkeleton() {
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
-              <TableHead className="hidden sm:table-cell">Description</TableHead>
-              <TableHead className="hidden md:table-cell">Created At</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="hidden sm:table-cell">Model Name</TableHead>
+              <TableHead className="hidden md:table-cell">Type</TableHead>
               <TableHead className="w-24 md:w-48">
                 <span className="hidden md:inline">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="animate-pulse">
+          <TableBody>
             {x}
           </TableBody>
         </Table>

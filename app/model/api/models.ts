@@ -3,6 +3,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { z } from 'zod'
+import { notFound } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
 import prisma from '@/lib/prisma';
@@ -17,7 +18,6 @@ const AddTokenSchema = z.lazy(() => z.object({
 }))
 
 export type AddTokenType = z.infer<typeof AddTokenSchema>
-
 
 export async function addToken(data_: Record<string, any>) {
   const data = AddTokenSchema.parse(data_)
@@ -47,26 +47,6 @@ export async function addToken(data_: Record<string, any>) {
 
   revalidatePath('/token/')
   return value
-}
-
-export async function updateEnable(id: number, enable: boolean) {
-  const token = await prisma.token.findUnique({
-    where: { id }
-  })
-
-  if (!token) {
-    throw new Error("Token not found")
-  }
-
-  await prisma.token.update({
-    where: { id },
-    data: {
-      isEnabled: enable
-    }
-  })
-
-  revalidatePath('/token/edit/' + id.toString())
-  revalidatePath('/token/')
 }
 
 export async function editToken(id: number, data_: Record<string, any>) {
@@ -102,11 +82,11 @@ export async function editToken(id: number, data_: Record<string, any>) {
 }
 
 
-export async function fetchTokens() {
-  const tokens = await prisma.token.findMany({
-    orderBy: { createdAt: 'desc' }
+export async function fetchModels() {
+  const models = await prisma.aiModel.findMany({
+    orderBy: { id: 'desc' }
   })
-  return tokens
+  return models
 }
 
 export async function fetchToken(id: number) {
