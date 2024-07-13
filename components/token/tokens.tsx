@@ -34,7 +34,7 @@ export async function Tokens() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {tokens.map((token) => (
+              {tokens.map((token: any) => (
                 <TableRow key={token.id}>
                   <TableCell className="group">
                     <div className="font-semibold">

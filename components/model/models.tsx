@@ -58,7 +58,7 @@ export async function Models() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {models.map((model) => (
+              {models.map((model: any) => (
                 <TableRow key={model.id}>
                   <TableCell className="group">
                     <div className="font-semibold">

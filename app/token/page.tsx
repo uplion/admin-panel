@@ -4,6 +4,8 @@ import { PlusIcon } from '@heroicons/react/24/outline';
 import { Tokens, TokensSkeleton } from "@/components/token/tokens";
 import { Suspense } from "react";
 
+export const dynamic = 'force-dynamic'
+
 export default function Page() {
 
   return (
