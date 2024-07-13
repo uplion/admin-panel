@@ -37,7 +37,9 @@ export async function addModel(data_: Record<string, any>) {
     apiKey: data.apiToken,
     model: data.modelName,
     image: IMAGE,
-    maxProcessNum: data.maxProcesses || (data.type === 'local' ? 4 : 128)
+    maxProcessNum: data.maxProcesses || (data.type === 'local' ? 4 : 128),
+    replicas: 3,
+    msgBacklogThreshold: 5
   })
 
   const newaimodel = await prisma.aiModel.create({ data: {
@@ -70,7 +72,9 @@ export async function editModel(id: number, data_: Record<string, any>) {
     apiKey: data.apiToken,
     model: data.modelName,
     image: IMAGE,
-    maxProcessNum: data.maxProcesses || (data.type === 'local' ? 4 : 128)
+    maxProcessNum: data.maxProcesses || (data.type === 'local' ? 4 : 128),
+    replicas: 3,
+    msgBacklogThreshold: 5
   })
 
   await prisma.aiModel.update({
@@ -111,10 +115,19 @@ export async function fetchModel(id: number) {
 
 
 export async function deleteModel(id: number) {
+  const model = await prisma.aiModel.findUnique({
+    where: { id: id }
+  });
+
+  if (!model) {
+    throw new Error("Model not found");
+  }
 
   await prisma.aiModel.delete({
     where: { id }
   });
+
+  await deleteAIModel(model.name)
 
   revalidatePath('/model/model/' + id.toString())
   revalidatePath('/model/edit/' + id.toString())

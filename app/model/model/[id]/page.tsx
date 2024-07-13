@@ -1,16 +1,16 @@
 import { fetchModel } from "../../api/models"
 import { notFound } from "next/navigation";
 
-import { Token } from '@/lib/prisma'
 import { CardContent, Card } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { Square3Stack3DIcon } from "@heroicons/react/24/outline"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch"
-import { toast } from 'sonner';
+import { getModelStatus } from "@/lib/k8s";
+import { cn } from "@/lib/utils";
+import { CheckIcon, CrossIcon, QuestionIcon } from "@/components/icons";
 
+export const dynamic = 'force-dynamic'
 
 export const metadata = {
   title: 'Model',
@@ -22,6 +22,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!model) {
     return notFound()
   }
+
+  const modelStatus = await getModelStatus(model.name)
 
   return (
     <>
@@ -50,6 +52,27 @@ export default async function Page({ params }: { params: { id: string } }) {
           </Button>
         </div>
       </div>
+      <div className={cn(
+        "border-[1px] rounded-lg p-4 text-sm",
+        {
+          'border-green-500 text-green-500 bg-green-50': (modelStatus as any)?.status?.state === "Running",
+          'border-yellow-500 text-yellow-500 bg-yellow-50': (modelStatus as any)?.status?.state === "Unknown",
+          'border-red-500 text-red-500 bg-red-50': (modelStatus as any)?.status?.state === "Failed",
+        }
+        )}>
+        <h2 className="font-bold text-lg">
+          {
+            (modelStatus as any)?.status?.state === "Running" ?
+              <CheckIcon className="fill-current w-4 h-4 inline-block mr-2 mb-[1px]"></CheckIcon> :
+              (modelStatus as any)?.status?.state === "Failed" ?
+                <CrossIcon className="fill-current w-4 h-4 inline-block mr-2 mb-[1px]"></CrossIcon>:
+                <QuestionIcon className="fill-current w-4 h-4 inline-block mr-2 mb-[1px]"></QuestionIcon>
+          }
+          {(modelStatus as any)?.status?.state || "Unknown"}
+        </h2>
+        <p>{(modelStatus as any)?.status?.message}</p>
+      </div>
+
       <Card className="group">
         <CardContent className="space-y-4 mt-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

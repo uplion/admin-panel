@@ -51,7 +51,29 @@ export async function applyAIModel(name: string, data: AIModelSpec) {
     },
     spec: data
   }
-  await _applyAIModel('default', body)
+  await __applyAIModel('default', body)
+}
+
+export async function getModelsStatus() {
+  const k8sApi = getK8sApi()
+  const res = await k8sApi.listClusterCustomObject('model.youxam.com', 'v1alpha1', 'aimodels')
+  return res.body
+}
+
+export async function getModelStatus(name: string) {
+  const k8sApi = getK8sApi()
+  try {
+    const res = await k8sApi.getNamespacedCustomObject('model.youxam.com', 'v1alpha1', 'default', 'aimodels', name + '-ai-model')
+    return res.body
+  } catch (e: any) {
+    if (e.response && e.response.statusCode === 404) {
+      console.warn('CRD object not found');
+      return null
+    } else {
+      console.error('Error getting CRD object:', e);
+      return null
+    }
+  }
 }
 
 export async function deleteAIModel(name: string) {
@@ -67,7 +89,7 @@ export async function deleteAIModel(name: string) {
   }
 }
 
-async function _applyAIModel(namespace: string, body: AIModelConfig) {
+async function __applyAIModel(namespace: string, body: AIModelConfig) {
   await applyCustomResource('model.youxam.com', 'v1alpha1', namespace, 'aimodels', body)
 }
 

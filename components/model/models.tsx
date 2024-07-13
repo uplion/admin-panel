@@ -4,6 +4,8 @@ import { TableHead, TableRow, TableHeader, TableCell, TableBody, Table } from "@
 import { CardContent, Card } from "@/components/ui/card"
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +16,30 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { getModelsStatus } from "@/lib/k8s";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils";
+
 export async function Models() {
-  const models = await fetchModels()
+  const [models, modelStatus] = await Promise.all([fetchModels(), getModelsStatus()])
+
+  const statusMap = new Map<string, {
+    state: string,
+    message: string
+  }>()
+
+  for (const status of (modelStatus as any).items) {
+    statusMap.set(status.metadata.name, {
+      state: status.status.state,
+      message: status.status.message
+    })
+  }
 
   return models.length ? (
     <>
@@ -46,7 +70,28 @@ export async function Models() {
                       </Link>
                     </div>
                   </TableCell>
-                  <TableCell>Running</TableCell>
+                  <TableCell className="group">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Link href={"/model/model/" + model.id} className={cn(
+                            "border-b-[1px] border-transparent transition-colors font-bold",
+                            {
+                              "group-hover:border-green-700 text-green-700": statusMap.get(model.name + "-ai-model")?.state === "Running",
+                              "group-hover:border-red-700 text-red-700 ": statusMap.get(model.name + "-ai-model")?.state === "Failed",
+                              "group-hover:border-yellow-700 text-yellow-700": statusMap.get(model.name + "-ai-model")?.state === "Unknown",
+                            }
+                          )}>
+                            { statusMap.get(model.name + "-ai-model")?.state || "Unknown" }
+                          </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{ statusMap.get(model.name + "-ai-model")?.message || "Unknown" }</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                  </TableCell>
                   <TableCell className="hidden sm:table-cell">{model.modelName}</TableCell>
                   <TableCell className="hidden md:table-cell">{model.type}</TableCell>
                   <TableCell>
