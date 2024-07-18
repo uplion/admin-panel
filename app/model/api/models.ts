@@ -16,7 +16,7 @@ const AddModelSchema = z.object({
 
 export type AddModelType = z.infer<typeof AddModelSchema>
 
-const IMAGE = 'youxam/uplion-aimodel-operator-test-worker:latest'
+const IMAGE = process.env.IMAGE || 'youxam/uplion-aimodel-operator-test-worker:latest';
 
 export async function addModel(data_: Record<string, any>) {
   const data = AddModelSchema.parse(data_)
