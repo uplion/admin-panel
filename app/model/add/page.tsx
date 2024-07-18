@@ -91,7 +91,7 @@ export default function Page() {
             {type === 'remote' ? (<>
               <div className="space-y-2">
                 <Label htmlFor="model-baseurl">Base URL <span className="text-red-400">*</span></Label>
-                <Input id="model-baseurl" name='baseurl' required placeholder="https://api.openai.com"></Input>
+                <Input id="model-baseurl" name='baseurl' required placeholder="https://api.openai.com/v1"></Input>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="model-apitoken">API Token <span className="text-red-400">*</span></Label>
