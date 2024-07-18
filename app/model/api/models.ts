@@ -31,6 +31,16 @@ export async function addModel(data_: Record<string, any>) {
     throw new Error("Model already exists, try a different name")
   }
 
+  let msgBacklogThreshold = undefined
+
+  if (process.env.MSG_BACKLOG_THRESHOLD) {
+    msgBacklogThreshold = parseInt(process.env.MSG_BACKLOG_THRESHOLD)
+    if (!msgBacklogThreshold) {
+      console.warn('Invalid MSG_BACKLOG_THRESHOLD, using default value 5')
+      msgBacklogThreshold = 5
+    }
+  }
+
   await applyAIModel(data.name, {
     type: data.type,
     baseURL: data.baseUrl,
@@ -38,8 +48,8 @@ export async function addModel(data_: Record<string, any>) {
     model: data.modelName,
     image: IMAGE,
     maxProcessNum: data.maxProcesses || (data.type === 'local' ? 4 : 128),
-    replicas: 3,
-    msgBacklogThreshold: 5
+    replicas: process.env.REPLICAS ? parseInt(process.env.REPLICAS) || 3 : 3,
+    msgBacklogThreshold
   })
 
   const newaimodel = await prisma.aiModel.create({ data: {
