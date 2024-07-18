@@ -107,7 +107,7 @@ export default function Page() {
             }
             if (scope) {
               if (paths.current.length === 0) {
-                toast.error("Please enter at least one path.")
+                toast.error("Please enter at least one model.")
                 return
               }
               data.allowedModels = paths.current
