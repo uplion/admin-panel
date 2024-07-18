@@ -10,7 +10,8 @@ Admin panel for manage api keys and ai models.
 
 ## Environment Variables
 
-`DATABASE_URL`：PostgreSQL database url
+1. `DATABASE_URL`：PostgreSQL database url
+2. `IMAGE`: Image of worker node.
 
 ## Docker Image
 
