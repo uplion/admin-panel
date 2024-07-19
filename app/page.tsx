@@ -1,10 +1,16 @@
 import Link from "next/link"
 import Image from "next/image"
+import { Button } from "@/components/ui/button"
 
 
 export default async function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between lg:p-24 py-24 px-16">
+    <main className="flex min-h-screen flex-col items-center justify-between lg:p-24 py-24 px-16 relative">
+      <Button  variant="ghost" className='py-4 text-lg absolute top-4 right-2'>
+        <Link href="../cdn-cgi/access/logout" >
+          Logout
+        </Link>
+      </Button>
       <div
         className="w-[300px] h-[300px] z-1 relative flex place-items-center mb-12"
       >
