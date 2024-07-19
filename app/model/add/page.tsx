@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { validName } from "@/lib/utils";
 
 export default function Page() {
 
@@ -46,6 +47,11 @@ export default function Page() {
         <form action={async (formdata: FormData) => {
           try {
             const maxProcesses = formdata.get("maxprocesses") as string
+            const validInfo = validName(formdata.get("name") as string)
+            if (validInfo) {
+              toast.error(validInfo)
+              return
+            }
             const newmodel = await addModel({
               type: formdata.get("type") as string,
               name: formdata.get("name") as string,

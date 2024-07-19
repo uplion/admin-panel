@@ -42,6 +42,7 @@ interface K8sConfig {
   spec: object
 }
 
+
 export async function applyAIModel(name: string, data: AIModelSpec) {
   const body: AIModelConfig = {
     apiVersion: "model.youxam.com/v1alpha1",

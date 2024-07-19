@@ -21,6 +21,7 @@ import {
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { AiModel } from "@/lib/prisma";
+import { validName } from "@/lib/utils";
 
 export function Edit({ model }: { model: AiModel }) {
   const router = useRouter()
@@ -48,6 +49,11 @@ export function Edit({ model }: { model: AiModel }) {
         <form action={async (formdata: FormData) => {
           try {
             const maxProcesses = formdata.get("maxprocesses") as string
+            const validInfo = validName(formdata.get("name") as string)
+            if (validInfo) {
+              toast.error(validInfo)
+              return
+            }
             await editModel(model.id, {
               type: formdata.get("type") as string,
               name: formdata.get("name") as string,
